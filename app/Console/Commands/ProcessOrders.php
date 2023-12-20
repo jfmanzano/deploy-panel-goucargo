@@ -85,7 +85,7 @@ class ProcessOrders extends Command
                     $controller->sendErrorMail("command:processorders", "Pedido $orderCode tiene un error -> " . $response);
                     Log::error($response);
                     Order::where('order_code', $orderCode)->where('deleted_at', null)->update(['status' => 3]);
-                    return "command:processorders" . " Pedido $orderCode tiene un error -> " . $response;
+                    return Command::FAILURE;
                 }
             }
         } catch (\Exception $e) {
@@ -93,9 +93,9 @@ class ProcessOrders extends Command
             $controller->sendErrorMail("command:processorders", "Pedido $orderCode tiene un error -> " . $e);
             Log::error($e);
             Order::where('order_code', $orderCode)->where('deleted_at', null)->update(['status' => 3]);
-            return "command:processorders" . " Pedido $orderCode tiene un error -> " . $e;
+            return Command::FAILURE;
         }
         $this->info("PEDIDO " . $orderCode . " PROCESADO CON ÉXITO");
-        return 'OK';
+        return Command::SUCCESS;
     }
 }
