@@ -59,34 +59,33 @@ class ProcessOrders extends Command
                     "Server" => "API Globomatik",
                     "Cache-Control" => "no-cache",
                 ])->post(env('URL_API') . "/api/v2/orders", [
-                            "products" => $products,
-                            "codPedidoCliente" => $order->order_code,
-                            "codPedidoClienteFinal" => $order->client_order_code,
-                            "observaciones" => $order->order_comments,
-                            "dropshipping" => $order->dropshipping,
-                            "envioANombre" => $order->send_to_name,
-                            "envioADireccion" => $order->send_to_address,
-                            "envioACp" => $order->send_to_zipcode,
-                            "envioAPoblacion" => $order->send_to_village_neighborhood,
-                            "envioAProvincia" => $order->send_to_city,
-                            "envioATelefono" => $order->send_to_phone_number,
-                            "envioAAtencion" => $order->send_to_person,
-                            "codTransporte" => $order->transport_code,
-                            "tipoAlbaran" => $order->delivery_note_type,
-                            "tipoEmbalaje" => $order->packaging_type
-                        ]);
+                    "products" => $products,
+                    "codPedidoCliente" => $order->order_code,
+                    "codPedidoClienteFinal" => $order->client_order_code,
+                    "observaciones" => $order->order_comments,
+                    "dropshipping" => $order->dropshipping,
+                    "envioANombre" => $order->send_to_name,
+                    "envioADireccion" => $order->send_to_address,
+                    "envioACp" => $order->send_to_zipcode,
+                    "envioAPoblacion" => $order->send_to_village_neighborhood,
+                    "envioAProvincia" => $order->send_to_city,
+                    "envioATelefono" => $order->send_to_phone_number,
+                    "envioAAtencion" => $order->send_to_person,
+                    "codTransporte" => $order->transport_code,
+                    "tipoAlbaran" => $order->delivery_note_type,
+                    "tipoEmbalaje" => $order->packaging_type
+                ]);
                 if ($response->getStatusCode() == 200 || $response->getStatusCode() == 201) {
                     Order::where('order_code', $orderCode)->where('deleted_at', null)->update([
                         'status' => 1
                     ]);
-                }
-                else{
+                } else {
                     $this->info($response);
                     $controller = app(Controller::class);
                     $controller->sendErrorMail("command:processorders", "Pedido $orderCode tiene un error -> " . $response);
                     Log::error($response);
                     Order::where('order_code', $orderCode)->where('deleted_at', null)->update(['status' => 3]);
-                    return Command::FAILURE;
+                    return "command:processorders" . " Pedido $orderCode tiene un error -> " . $response;
                 }
             }
         } catch (\Exception $e) {
@@ -94,7 +93,7 @@ class ProcessOrders extends Command
             $controller->sendErrorMail("command:processorders", "Pedido $orderCode tiene un error -> " . $e);
             Log::error($e);
             Order::where('order_code', $orderCode)->where('deleted_at', null)->update(['status' => 3]);
-            return Command::FAILURE;
+            return "command:processorders" . " Pedido $orderCode tiene un error -> " . $e;
         }
         $this->info("PEDIDO " . $orderCode . " PROCESADO CON ÉXITO");
         return Command::SUCCESS;

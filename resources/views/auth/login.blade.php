@@ -10,7 +10,9 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <link rel="icon" href="https://cdn2.globomatik.com/media/favicon/default/faviconglobo23.png" type="image/x-icon">
+
+    {{-- Favicon --}}
+    <link rel="icon" href="favicon-goucargo2.png" type="image/x-icon">
 
 
     <!-- Fonts -->
