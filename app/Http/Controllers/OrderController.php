@@ -121,7 +121,7 @@ class OrderController extends Controller
 
     public function storeOrderExcel(Request $request)
     {
-        $accountName = Auth::user()->user;
+        strtolower$accountName = Auth::user()->user;
         $templateID = Auth::user()->template_id;
         $template = Template::where('id', $templateID)->first();
 
@@ -175,7 +175,7 @@ class OrderController extends Controller
                                 $order->send_to_person = $fila["send_to_name"];
                             }
                             $order->dropshipping = 1;
-                            $order->transport_code = ($accountName == "HUDL") ? (214) : (58);
+                            $order->transport_code = (strtolower($accountName) == "hudl") ? (214) : (58);
                             $order->delivery_note_type = 4;
                             $order->packaging_type = 1;
                             $order->order_code_nav = null;
@@ -185,7 +185,7 @@ class OrderController extends Controller
                             $order->status_text = null;
                             $order->tracking_number = null;
                             $order->status = 0;
-                            $order->user = $accountName;
+                            $order->user = strtolower($accountName);
                             $order->save();
                         }
                         $sku = Producto::where('PN', $fila["sku"])->pluck('sku')->first();
@@ -214,7 +214,7 @@ class OrderController extends Controller
                         Alert::success('ORDERS CREATED SUCCESSFULLY', '');
                     }
                 } catch (\Exception $e) {
-                    $this->sendErrorMail($accountName, $e);
+                    $this->sendErrorMail(strtolower$accountName, $e);
                     Alert::warning('ERROR CREATING ORDERS', '');
                     return redirect("create-order");
                 }
