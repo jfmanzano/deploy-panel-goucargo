@@ -32,7 +32,7 @@ class OrderController extends Controller
         $processedOrderStatus = [];
         if (isset($processedOrders)) {
             foreach ($processedOrders as $order_code) {
-                array_push($processedOrderStatus, Order::where("order_code", $order_code)->where('deleted_at',null)->get());
+                array_push($processedOrderStatus, Order::where("order_code", $order_code)->where('deleted_at', null)->get());
             }
         }
         return view("order-status", compact("processedOrderStatus"));
@@ -121,7 +121,7 @@ class OrderController extends Controller
 
     public function storeOrderExcel(Request $request)
     {
-        strtolower$accountName = Auth::user()->user;
+        $accountName = Auth::user()->user;
         $templateID = Auth::user()->template_id;
         $template = Template::where('id', $templateID)->first();
 
@@ -154,7 +154,7 @@ class OrderController extends Controller
                             }
                             if (isset($columnas[$y])) {
                                 if ($columnas[$y] == "send_to_name" && $templateID == 2) {
-                                    $datos[$i][$columnas[$y]] = $data[$i][$y-1] . " " . $data[$i][$y];
+                                    $datos[$i][$columnas[$y]] = $data[$i][$y - 1] . " " . $data[$i][$y];
                                 } else {
                                     $datos[$i][$columnas[$y]] = $data[$i][$y];
                                 }
@@ -171,7 +171,7 @@ class OrderController extends Controller
                                 $order->$key = $value;
                             }
                             $order->client_order_code = $fila["order_code"];
-                            if($templateID == 2){
+                            if ($templateID == 2) {
                                 $order->send_to_person = $fila["send_to_name"];
                             }
                             $order->dropshipping = 1;
@@ -214,7 +214,7 @@ class OrderController extends Controller
                         Alert::success('ORDERS CREATED SUCCESSFULLY', '');
                     }
                 } catch (\Exception $e) {
-                    $this->sendErrorMail(strtolower$accountName, $e);
+                    $this->sendErrorMail($accountName, $e);
                     Alert::warning('ERROR CREATING ORDERS', '');
                     return redirect("create-order");
                 }
@@ -228,11 +228,11 @@ class OrderController extends Controller
     }
     public function deletedAt($id)
     {
-        $orderCode = Order::where('id',$id)->pluck('order_code')->first();
+        $orderCode = Order::where('id', $id)->pluck('order_code')->first();
         Order::where('id', $id)->update([
             'deleted_at' => now()
         ]);
-        OrderLines::where('order_code',$orderCode)->delete();
+        OrderLines::where('order_code', $orderCode)->delete();
         Alert::success('ORDER DELETED SUCCESSFULLY', '');
         return redirect()->back();
     }
