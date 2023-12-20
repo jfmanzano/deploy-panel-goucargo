@@ -96,6 +96,6 @@ class ProcessOrders extends Command
             return "command:processorders" . " Pedido $orderCode tiene un error -> " . $e;
         }
         $this->info("PEDIDO " . $orderCode . " PROCESADO CON ÉXITO");
-        return Command::SUCCESS;
+        return 'OK';
     }
 }
