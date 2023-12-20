@@ -18,5 +18,6 @@ class ExecuteArtisanCommandController extends Controller
         $params = $request->all();
         Artisan::call($command, $params);
         $output = Artisan::output();
+        return $output;
     }
 }
